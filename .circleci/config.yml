@@ -1,19 +1,19 @@
 version: 2
-jobs:
+jobs: # every circleci config file must have a build job
   build:
     working_directory: /dockerapp
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: docker:17.05.0-ce-git # an offical docker image with git pre-installed. The build will create a parent container based on this image, where test containers will be created within the parent container
     steps:
-      - checkout
-      - setup_remote_docker
+      - checkout # checkout source code from github
+      - setup_remote_docker # creates a separate environment for each build (for security)
       - run:
           name: Install dependencies
           command: |
             apk add --no-cache py-pip=9.0.0-r1
             pip install docker-compose==1.15.0
       - run:
-          name: Run tests
+          name: Run tests # run tests in a container withint the container
           command: |
             docker-compose up -d
             docker-compose run dockerapp python test.py
